@@ -1,27 +1,51 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
+    <!-- Meta información -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MS-DOS Terminal</title>
+    <meta name="description" content="Emulador interactivo de MS-DOS v6.22 con terminal verde retro CRT">
+    <meta name="theme-color" content="#0a0a0a">
+    
+    <!-- Título y estilos -->
+    <title>MS-DOS Terminal Emulator - Retro CRT</title>
     <link rel="stylesheet" href="style.css">
+    
+    <!-- Prevención de zoom en móviles -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 </head>
 <body>
-    <div class="crt-screen">
-        <div class="scanlines"></div>
+    <!-- Contenedor principal con efecto CRT -->
+    <div class="crt-screen" role="application" aria-label="MS-DOS Terminal Emulator">
+        <!-- Líneas de escaneo para efecto retro -->
+        <div class="scanlines" aria-hidden="true"></div>
         
-        <div class="terminal" id="terminal">
+        <!-- Terminal principal -->
+        <div class="terminal" id="terminal" role="textbox" aria-multiline="true" aria-label="Terminal output">
+            <!-- Área de salida de comandos -->
             <div id="output">
                 C:\>REM Bienvenido a MS-DOS v6.22 (CRT Edition)<br>
                 C:\>REM Escribe 'HELP' para ver los comandos disponibles.<br><br>
             </div>
+            
+            <!-- Línea de entrada con prompt -->
             <div class="input-line" id="prompt-container">
-                <span id="prompt">C:\></span>
-                <input type="text" id="cmd-input" autofocus autocomplete="off" spellcheck="false">
+                <span id="prompt" class="prompt-text">C:\></span>
+                <input 
+                    type="text" 
+                    id="cmd-input" 
+                    class="command-input"
+                    autofocus 
+                    autocomplete="off" 
+                    spellcheck="false"
+                    aria-label="Command input"
+                    placeholder=""
+                >
             </div>
         </div>
     </div>
 
-    <script src="script.js"></script>
+    <!-- Script principal -->
+    <script src="script.js" defer></script>
 </body>
 </html>
