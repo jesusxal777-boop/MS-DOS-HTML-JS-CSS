@@ -7,17 +7,15 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <!-- El contenedor crt-screen aplica el efecto de curvatura y fósforo -->
     <div class="crt-screen">
-        <!-- Las scanlines y el parpadeo se superponen aquí -->
         <div class="scanlines"></div>
         
         <div class="terminal" id="terminal">
             <div id="output">
-                C:\>REM Bienvenido a MS-DOS v6.22<br>
+                C:\>REM Bienvenido a MS-DOS v6.22 (CRT Edition)<br>
                 C:\>REM Escribe 'HELP' para ver los comandos disponibles.<br><br>
             </div>
-            <div class="input-line">
+            <div class="input-line" id="prompt-container">
                 <span id="prompt">C:\></span>
                 <input type="text" id="cmd-input" autofocus autocomplete="off" spellcheck="false">
             </div>
