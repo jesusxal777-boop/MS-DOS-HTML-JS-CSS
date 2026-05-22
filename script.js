@@ -43,6 +43,10 @@ function getCurrentNode() {
     return node;
 }
 
+function getPromptText() {
+    return currentPath.join("\\") + ">";
+}
+
 function printText(text) {
     const line = document.createElement("div");
     line.textContent = text;
@@ -51,61 +55,123 @@ function printText(text) {
 }
 
 function executeCommand(cmdLine) {
-    printText(currentPath.join("\\") + "> " + cmdLine);
+    // Imprimir el comando ejecutado en la pantalla antes de procesar
+    printText(getPromptText() + " " + cmdLine);
 
     const parts = cmdLine.split(" ");
-    const command = parts[0].toUpperCase();
+    
+    // Limpiamos el comando: lo pasamos a mayúsculas y le quitamos el ".EXE" si el usuario lo escribió
+    let command = parts[0].toUpperCase();
+    if (command.endsWith(".EXE")) {
+        command = command.slice(0, -4); // Quita los últimos 4 caracteres (.EXE)
+    }
+    
     const args = parts.slice(1);
     const currentFolder = getCurrentNode();
 
-    // Permitir ejecutar archivos escribiendo su nombre directamente o con extensión
-    let targetName = command;
-    if (!targetName.endsWith(".EXE") && currentFolder[targetName + ".EXE"]) {
-        targetName += ".EXE";
-    }
-
-    if (currentFolder[targetName] && currentFolder[targetName].type === "executable") {
-        runExecutable(currentFolder[targetName].action, args);
-        return;
-    }
-
+    // Verificamos si el archivo existe en la carpeta actual antes de lanzarlo
+    // Esto evita que ejecutes EDIT estando en una carpeta donde no se encuentra el archivo
+    const exeName = command + ".EXE";
+    
     switch (command) {
         case "CLS":
             output.innerHTML = "";
             break;
+
         case "VER":
             printText("MS-DOS version 6.22 (Virtual CRT Edition)");
             break;
+
+        case "DATE":
+            printText("Current date is " + new Date().toLocaleDateString());
+            break;
+
         case "DIR":
             printText(" Directory of " + currentPath.join("\\") + "\n");
+            let fileCount = 0;
+            let dirCount = 0;
+            
             for (let key in currentFolder) {
                 if (currentFolder[key].type === "dir") {
                     printText(`${key.padEnd(12)} <DIR>`);
+                    dirCount++;
                 } else {
-                    printText(`${key.padEnd(12)}        EXE/BAT/TXT`);
+                    printText(`${key.padEnd(12)}        ${currentFolder[key].content ? currentFolder[key].content.length : 0} bytes`);
+                    fileCount++;
                 }
             }
+            printText(`\n     ${fileCount} File(s)`);
+            printText(`     ${dirCount} Dir(s)`);
             break;
+
         case "CD":
-            if (!args[0]) break;
+            if (!args[0] || args[0] === ".") {
+                break;
+            }
             if (args[0] === "..") {
-                if (currentPath.length > 1) currentPath.pop();
+                if (currentPath.length > 1) {
+                    currentPath.pop();
+                }
             } else {
                 const targetDir = args[0].toUpperCase();
                 if (currentFolder[targetDir] && currentFolder[targetDir].type === "dir") {
                     currentPath.push(targetDir);
                 } else {
-                    printText("Invalid directory");
+                    printText("Invalid directory - " + args[0]);
                 }
             }
             break;
-        case "HELP":
-            printText("Commands: CLS, VER, DIR, CD, EDIT, QBASIC");
+
+        case "TYPE":
+            if (!args[0]) {
+                printText("Required parameter missing");
+                break;
+            }
+            const targetFile = args[0].toUpperCase();
+            if (currentFolder[targetFile] && currentFolder[targetFile].type === "file") {
+                printText(currentFolder[targetFile].content);
+            } else {
+                printText("File not found - " + args[0]);
+            }
             break;
+
+        case "EDIT":
+            // Comprobamos si EDIT.EXE existe en la ruta actual
+            if (currentFolder[exeName]) {
+                runExecutable("edit", args);
+            } else {
+                printText("Bad command or file name: " + parts[0]);
+            }
+            break;
+
+        case "QBASIC":
+            // Comprobamos si QBASIC.EXE existe en la ruta actual
+            if (currentFolder[exeName]) {
+                runExecutable("qbasic", args);
+            } else {
+                printText("Bad command or file name: " + parts[0]);
+            }
+            break;
+
+        case "HELP":
+            printText("Supported commands:");
+            printText("HELP   - Displays this list");
+            printText("CLS    - Clear the screen");
+            printText("VER    - Show MS-DOS version");
+            printText("DATE   - Show current date");
+            printText("DIR    - List files and directories");
+            printText("CD     - Change directory (e.g., CD DOS, CD ..)");
+            printText("TYPE   - Display file content");
+            printText("EDIT   - Open MS-DOS Editor (e.g., EDIT.EXE)");
+            printText("QBASIC - Open QuickBasic environment (e.g., QBASIC.EXE)");
+            break;
+
         default:
             printText("Bad command or file name: " + parts[0]);
     }
-    document.getElementById("prompt").textContent = currentPath.join("\\") + ">";
+
+    // Actualizar el prompt por si cambió de directorio
+    document.getElementById("prompt").textContent = getPromptText();
 }
 
 // Lógica de ejecución de aplicaciones contenedoras
