@@ -1,4 +1,13 @@
-@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
+/* ============================================
+   MS-DOS RETRO CRT TERMINAL EMULATOR
+   Estilo profesional con efectos retro auténticos
+   ============================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono:wght@400&display=swap');
+
+/* ============================================
+   RESET Y ESTILOS BASE
+   ============================================ */
 
 *, *::before, *::after {
     box-sizing: border-box;
@@ -6,17 +15,26 @@
     padding: 0;
 }
 
+html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
 body {
     background-color: #0a0a0a;
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
+    min-height: 100vh;
     overflow: hidden;
     font-family: 'Share Tech Mono', monospace;
+    font-size: 16px;
 }
 
-/* El monitor de tubo CRT */
+/* ============================================
+   MONITOR CRT - CONTENEDOR PRINCIPAL
+   ============================================ */
+
 .crt-screen {
     position: relative;
     width: 95vw;
@@ -26,86 +44,145 @@ body {
     background-color: #020b02;
     border: 18px solid #252525;
     border-radius: 25px;
-    box-shadow: 0 0 60px rgba(0, 0, 0, 0.9), inset 0 0 50px rgba(0, 255, 0, 0.15);
+    box-shadow: 
+        0 0 60px rgba(0, 0, 0, 0.9),
+        0 0 40px rgba(0, 0, 0, 0.8),
+        inset 0 0 50px rgba(0, 255, 0, 0.15),
+        inset 0 0 10px rgba(0, 0, 0, 0.5);
     overflow: hidden;
 }
 
-/* Filtro físico de líneas de escaneo y cristalización */
+/* ============================================
+   EFECTO LÍNEAS DE ESCANEO (SCANLINES)
+   ============================================ */
+
 .scanlines {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background: linear-gradient(
-        rgba(18, 16, 16, 0) 50%, 
-        rgba(0, 0, 0, 0.35) 50%
-    ), linear-gradient(
-        90deg, 
-        rgba(255, 0, 0, 0.05), 
-        rgba(0, 255, 0, 0.02), 
-        rgba(0, 0, 255, 0.05)
-    );
-    background-size: 100% 4px, 6px 100%;
+    background: 
+        linear-gradient(
+            0deg,
+            rgba(0, 0, 0, 0.15),
+            rgba(0, 0, 0, 0.15)
+        ) 0 0 / 100% 2px,
+        linear-gradient(
+            90deg, 
+            rgba(255, 0, 0, 0.03), 
+            rgba(0, 255, 0, 0.02), 
+            rgba(0, 0, 255, 0.03)
+        );
     z-index: 20;
     pointer-events: none;
+    animation: scanlineAnimation 8s linear infinite;
 }
 
-/* Pantalla principal de la consola verde */
+@keyframes scanlineAnimation {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(10px); }
+}
+
+/* ============================================
+   TERMINAL - PANTALLA PRINCIPAL
+   ============================================ */
+
 .terminal {
     width: 100%;
     height: 100%;
     padding: 20px;
     color: #33ff33;
-    text-shadow: 0 0 6px rgba(51, 255, 51, 0.6);
+    text-shadow: 
+        0 0 6px rgba(51, 255, 51, 0.6),
+        0 0 10px rgba(0, 255, 0, 0.3);
     font-size: 1.2rem;
     line-height: 1.4;
     overflow-y: auto;
+    overflow-x: hidden;
+    background-color: #020b02;
     animation: crtFlicker 0.15s infinite;
+    letter-spacing: 0.02em;
 }
 
+/* Ocultar scrollbar en navegadores webkit */
 .terminal::-webkit-scrollbar {
-    width: 0px;
+    width: 8px;
 }
+
+.terminal::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.3);
+}
+
+.terminal::-webkit-scrollbar-thumb {
+    background: rgba(51, 255, 51, 0.4);
+    border-radius: 4px;
+}
+
+.terminal::-webkit-scrollbar-thumb:hover {
+    background: rgba(51, 255, 51, 0.6);
+}
+
+/* Scrollbar para Firefox */
+.terminal {
+    scrollbar-color: rgba(51, 255, 51, 0.4) rgba(0, 0, 0, 0.3);
+    scrollbar-width: thin;
+}
+
+/* ============================================
+   LÍNEA DE ENTRADA (INPUT LINE)
+   ============================================ */
 
 .input-line {
     display: flex;
     align-items: center;
-    margin-top: 5px;
+    margin-top: 10px;
+    gap: 5px;
 }
 
-#prompt {
+.prompt-text {
     white-space: pre;
-    margin-right: 5px;
+    color: #33ff33;
+    text-shadow: 0 0 6px rgba(51, 255, 51, 0.6);
+    flex-shrink: 0;
 }
 
-#cmd-input {
+.command-input {
     flex: 1;
     background: transparent;
     border: none;
     color: #33ff33;
-    font-family: inherit;
-    font-size: inherit;
-    text-shadow: inherit;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 1.2rem;
+    text-shadow: 0 0 6px rgba(51, 255, 51, 0.6);
     outline: none;
     caret-color: #33ff33;
+    letter-spacing: 0.02em;
 }
 
-/* --- INTERFACES COMPLETAS DE APLICACIONES DOS (EDIT/QBASIC) --- */
+.command-input::placeholder {
+    color: rgba(51, 255, 51, 0.3);
+}
+
+/* ============================================
+   APLICACIONES DOS (EDIT / QBASIC)
+   ============================================ */
+
 .app-screen {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: #0000aa; /* Azul de fondo DOS clásico */
+    background-color: #0000aa;
     color: #ffffff;
     display: flex;
     flex-direction: column;
     z-index: 10;
     padding: 0;
-    text-shadow: none; /* Desactivamos el resplandor verde de la consola */
+    text-shadow: none;
     animation: crtFlicker 0.15s infinite;
+    font-family: 'Share Tech Mono', monospace;
 }
 
 .app-header {
@@ -115,12 +192,17 @@ body {
     padding: 3px 10px;
     font-weight: bold;
     text-transform: uppercase;
+    font-size: 0.95rem;
+    border-bottom: 1px solid #555555;
+    letter-spacing: 0.05em;
 }
 
 .app-content {
     flex: 1;
     padding: 15px;
     background-color: #0000aa;
+    overflow-y: auto;
+    overflow-x: hidden;
 }
 
 #edit-textarea {
@@ -128,25 +210,152 @@ body {
     height: 100%;
     background: transparent;
     border: none;
-    color: #ffff55; /* Texto amarillo claro cómodo estilo QuickBASIC */
+    color: #ffff55;
     font-family: 'Share Tech Mono', monospace;
-    font-size: 1.2rem;
+    font-size: 1.1rem;
     resize: none;
     outline: none;
+    padding: 0;
+    line-height: 1.5;
+    letter-spacing: 0.01em;
+}
+
+#edit-textarea::selection {
+    background-color: #aaaaaa;
+    color: #000000;
 }
 
 .app-footer {
     background-color: #aaaaaa;
     color: #000000;
     padding: 4px 15px;
-    font-size: 0.95rem;
+    font-size: 0.9rem;
     display: flex;
     justify-content: space-between;
+    border-top: 1px solid #555555;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
 }
 
-/* Animación global de parpadeo CRT */
+/* ============================================
+   BOTONES ESTILO DOS
+   ============================================ */
+
+button {
+    padding: 8px 16px;
+    background-color: #aaaaaa;
+    color: #000000;
+    font-weight: bold;
+    border: 3px outset #ffffff;
+    border-right-color: #555555;
+    border-bottom-color: #555555;
+    cursor: pointer;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.95rem;
+    transition: all 0.1s ease;
+    user-select: none;
+}
+
+button:active {
+    border-style: inset;
+    border-right-color: #ffffff;
+    border-bottom-color: #ffffff;
+}
+
+button:hover {
+    background-color: #b9b9b9;
+}
+
+button:focus {
+    outline: 2px dotted #000000;
+    outline-offset: -4px;
+}
+
+/* ============================================
+   ANIMACIONES
+   ============================================ */
+
 @keyframes crtFlicker {
     0% { opacity: 0.985; }
     50% { opacity: 1; }
     100% { opacity: 0.99; }
+}
+
+/* ============================================
+   RESPONSIVE DESIGN
+   ============================================ */
+
+@media (max-width: 768px) {
+    .crt-screen {
+        border-width: 12px;
+        border-radius: 15px;
+    }
+    
+    .terminal {
+        font-size: 1rem;
+        padding: 15px;
+    }
+    
+    .command-input {
+        font-size: 1rem;
+    }
+    
+    .app-header,
+    .app-footer {
+        font-size: 0.85rem;
+        padding: 2px 8px;
+    }
+    
+    #edit-textarea {
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    body {
+        font-size: 14px;
+    }
+    
+    .crt-screen {
+        border-width: 8px;
+        border-radius: 10px;
+    }
+    
+    .terminal {
+        font-size: 0.9rem;
+        padding: 10px;
+    }
+    
+    .command-input {
+        font-size: 0.9rem;
+    }
+}
+
+/* ============================================
+   DARK MODE / MODO NOCHE
+   ============================================ */
+
+@media (prefers-color-scheme: dark) {
+    body {
+        background-color: #000000;
+    }
+}
+
+/* ============================================
+   REDUCIR MOVIMIENTO (ACCESIBILIDAD)
+   ============================================ */
+
+@media (prefers-reduced-motion: reduce) {
+    .terminal,
+    .app-screen {
+        animation: none !important;
+    }
+    
+    .scanlines {
+        animation: none !important;
+    }
+    
+    button {
+        transition: none;
+    }
 }
