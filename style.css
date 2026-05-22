@@ -1,29 +1,126 @@
-/* Interfaz de pantalla completa para aplicaciones como EDIT */
+@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
+
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-color: #0a0a0a;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    overflow: hidden;
+    font-family: 'Share Tech Mono', monospace;
+}
+
+/* El monitor de tubo CRT */
+.crt-screen {
+    position: relative;
+    width: 95vw;
+    height: 90vh;
+    max-width: 1000px;
+    max-height: 700px;
+    background-color: #020b02;
+    border: 18px solid #252525;
+    border-radius: 25px;
+    box-shadow: 0 0 60px rgba(0, 0, 0, 0.9), inset 0 0 50px rgba(0, 255, 0, 0.15);
+    overflow: hidden;
+}
+
+/* Filtro físico de líneas de escaneo y cristalización */
+.scanlines {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        rgba(18, 16, 16, 0) 50%, 
+        rgba(0, 0, 0, 0.35) 50%
+    ), linear-gradient(
+        90deg, 
+        rgba(255, 0, 0, 0.05), 
+        rgba(0, 255, 0, 0.02), 
+        rgba(0, 0, 255, 0.05)
+    );
+    background-size: 100% 4px, 6px 100%;
+    z-index: 20;
+    pointer-events: none;
+}
+
+/* Pantalla principal de la consola verde */
+.terminal {
+    width: 100%;
+    height: 100%;
+    padding: 20px;
+    color: #33ff33;
+    text-shadow: 0 0 6px rgba(51, 255, 51, 0.6);
+    font-size: 1.2rem;
+    line-height: 1.4;
+    overflow-y: auto;
+    animation: crtFlicker 0.15s infinite;
+}
+
+.terminal::-webkit-scrollbar {
+    width: 0px;
+}
+
+.input-line {
+    display: flex;
+    align-items: center;
+    margin-top: 5px;
+}
+
+#prompt {
+    white-space: pre;
+    margin-right: 5px;
+}
+
+#cmd-input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    color: #33ff33;
+    font-family: inherit;
+    font-size: inherit;
+    text-shadow: inherit;
+    outline: none;
+    caret-color: #33ff33;
+}
+
+/* --- INTERFACES COMPLETAS DE APLICACIONES DOS (EDIT/QBASIC) --- */
 .app-screen {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: #0000aa; /* Azul clásico de las herramientas DOS */
+    background-color: #0000aa; /* Azul de fondo DOS clásico */
     color: #ffffff;
     display: flex;
     flex-direction: column;
-    z-index: 5;
+    z-index: 10;
+    padding: 0;
+    text-shadow: none; /* Desactivamos el resplandor verde de la consola */
+    animation: crtFlicker 0.15s infinite;
 }
 
 .app-header {
     background-color: #aaaaaa;
     color: #000000;
     text-align: center;
-    padding: 2px 0;
+    padding: 3px 10px;
     font-weight: bold;
+    text-transform: uppercase;
 }
 
 .app-content {
     flex: 1;
-    padding: 10px;
-    position: relative;
+    padding: 15px;
+    background-color: #0000aa;
 }
 
 #edit-textarea {
@@ -31,9 +128,9 @@
     height: 100%;
     background: transparent;
     border: none;
-    color: #ffffff;
-    font-family: inherit;
-    font-size: 1.1rem;
+    color: #ffff55; /* Texto amarillo claro cómodo estilo QuickBASIC */
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 1.2rem;
     resize: none;
     outline: none;
 }
@@ -41,6 +138,15 @@
 .app-footer {
     background-color: #aaaaaa;
     color: #000000;
-    padding: 2px 10px;
-    font-size: 0.9rem;
+    padding: 4px 15px;
+    font-size: 0.95rem;
+    display: flex;
+    justify-content: space-between;
+}
+
+/* Animación global de parpadeo CRT */
+@keyframes crtFlicker {
+    0% { opacity: 0.985; }
+    50% { opacity: 1; }
+    100% { opacity: 0.99; }
 }
