@@ -1,0 +1,101 @@
+/* Importamos una fuente estilo pixel/retro */
+@import url('https://fonts.googleapis.com/css2?family=Courier+Prime&family=Share+Tech+Mono&display=swap');
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-color: #0b0b0b;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    overflow: hidden;
+    font-family: 'Share Tech Mono', 'Courier New', monospace;
+}
+
+/* Contenedor de la pantalla con una ligera curvatura */
+.crt-screen {
+    position: relative;
+    width: 95vw;
+    height: 90vh;
+    max-width: 1000px;
+    max-height: 700px;
+    background-color: #051105; /* Fondo verde oscuro de fósforo */
+    border: 20px solid #222;
+    border-radius: 20px;
+    box-shadow: 0 0 50px rgba(0, 0, 0, 0.8), inset 0 0 40px rgba(0, 255, 0, 0.2);
+    overflow: hidden;
+    animation: textShadow 0.1s infinite;
+}
+
+/* Capa superpuesta para las líneas de escaneo y el parpadeo */
+.scanlines {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        rgba(18, 16, 16, 0) 50%, 
+        rgba(0, 0, 0, 0.25) 50%
+    ), linear-gradient(
+        90deg, 
+        rgba(255, 0, 0, 0.06), 
+        rgba(0, 255, 0, 0.02), 
+        rgba(0, 0, 255, 0.06)
+    );
+    background-size: 100% 4px, 6px 100%;
+    z-index: 10;
+    pointer-events: none; /* Permite hacer clic a través de esta capa */
+}
+
+/* Efecto de parpadeo global de la pantalla vieja */
+@keyframes flicker {
+    0% { opacity: 0.98; }
+    50% { opacity: 1; }
+    100% { opacity: 0.99; }
+}
+
+.terminal {
+    width: 100%;
+    height: 100%;
+    padding: 20px;
+    color: #33ff33; /* Verde fósforo clásico */
+    text-shadow: 0 0 8px rgba(51, 255, 51, 0.55);
+    font-size: 1.2rem;
+    line-height: 1.4;
+    overflow-y: auto;
+    animation: flicker 0.15s infinite;
+}
+
+/* Ocultar barra de scroll para mantener la estética */
+.terminal::-webkit-scrollbar {
+    width: 0px;
+}
+
+.input-line {
+    display: flex;
+    align-items: center;
+    margin-top: 5px;
+}
+
+#prompt {
+    white-space: pre;
+    margin-right: 5px;
+}
+
+#cmd-input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    color: #33ff33;
+    font-family: inherit;
+    font-size: inherit;
+    text-shadow: inherit;
+    outline: none;
+    caret-color: #33ff33; /* El cursor */
+}
